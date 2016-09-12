@@ -1,9 +1,4 @@
 window.addEventListener('load', function () {
-  var logout = function() {
-    localStorage.removeItem('id_token');
-    window.location.href = '/';
-  };
-
   var lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
 
   lock.on('authenticated', function(authResult) {
@@ -14,6 +9,7 @@ window.addEventListener('load', function () {
       }
       localStorage.setItem('id_token', authResult.idToken);
       console.log(profile);
+      retrieveProfile();
     });
   });
 
@@ -24,12 +20,14 @@ window.addEventListener('load', function () {
 
   var showProfile = function (profile) {
     var message = document.getElementById('message');
-    var logoutBtn = document.getElementById('logout');
+    var loginBtn = document.getElementById('loginBtn');
+    var logoutBtn = document.getElementById('logoutBtn');
     var nameSpan = document.getElementById('nickname');
 
     nameSpan.textContent = profile.nickname;
-    message.setAttribute('display', 'block');
-    logoutBtn.setAttribute('display', 'block');
+    message.style.display = 'block';
+    loginBtn.style.display = 'none';
+    logoutBtn.style.display = 'block';
   };
 
   var retrieveProfile = function() {
@@ -42,10 +40,31 @@ window.addEventListener('load', function () {
         }
         showProfile(profile);
       });
-    } else {
+    }
+  };
+
+  var doLogin = function() {
+    var id_token = localStorage.getItem('id_token');
+    if (!id_token) {
       lock.show();
     }
   };
 
+  var doLogout = function() {
+    localStorage.removeItem('id_token');
+    window.location.href = '/';
+  };
+
+  var loginBtn = document.getElementById('loginBtn');
+  var logoutBtn = document.getElementById('logoutBtn');
+  loginBtn.addEventListener('click', function() {
+    lock.show();
+  });
+  logoutBtn.addEventListener('click', function() {
+    localStorage.removeItem('id_token');
+    window.location.href = '/';
+  });
+
   retrieveProfile();
+
 });
