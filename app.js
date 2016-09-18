@@ -67,4 +67,11 @@ window.addEventListener('load', function () {
 
   retrieveProfile();
 
+  // TODO: Remove when AWS signed URL functionality added
+  AWS.config.update({
+    accessKeyId: AWS_ACCESS_KEY,
+    secretAccessKey: AWS_SECRET_KEY,
+    region: 'us-east-1'
+  });
+
 });
